@@ -1,0 +1,349 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Pylons ユーザのための Pyramid 移行ガイド &mdash; pyconjp2012 current documentation</title>
+    
+    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'current',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pyconjp2012 current documentation" href="index.html" />
+    <link rel="prev" title="Welcome to pyconjp2012’s documentation!" href="index.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to pyconjp2012’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pyconjp2012 current documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <div class="section" id="pylons-pyramid">
+<h1>Pylons ユーザのための Pyramid 移行ガイド</h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Nozomu Kaneko</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Publication:</th><td class="field-body">Django &amp; Pyramid Con JP 2012 <br /> (in conjunction with Pycon JP 2012)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Date:</th><td class="field-body">2012-09-16</td>
+</tr>
+</tbody>
+</table>
+<div class="center">
+  <img src="_static/pylons.png" width="187" height="50" />
+</div><div class="section" id="id1">
+<h2>お前誰よ</h2>
+<div class="right">
+  <img src="_static/danboard_off2.jpg" width="73" height="73" />
+</div><ul>
+<li><p class="first">Twitter: &#64;knzm2011</p>
+</li>
+<li><p class="first">勤務先: TriAx (Silver スポンサー)</p>
+</li>
+<li><p class="first">Pylons を使い始めて5年ぐらい</p>
+<ul class="simple">
+<li>Python 歴もだいたい同じくらい</li>
+<li>入社後に Python に触り始めて、気がついたら CMS フレームワークを作ってた</li>
+</ul>
+</li>
+<li><p class="first">翻訳とか</p>
+<ul class="simple">
+<li>Pythonドキュメント日本語翻訳プロジェクト</li>
+<li>Pylons プロジェクトドキュメント / Pyramid ドキュメント</li>
+<li>PEP 333: Python Web Server Gateway Interface v1.0</li>
+</ul>
+<ul class="simple">
+<li>Pylons 0.9.7 ドキュメント</li>
+</ul>
+</li>
+<li><p class="first"><a class="reference external" href="http://www.pylonsproject.jp/">Pylons Project JP</a> の中の人</p>
+</li>
+<li><p class="first">実は Pyramid はあまり使ってない (これから...)</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>この発表について</h2>
+<ul class="simple">
+<li>こんな人におすすめ<ul>
+<li>今現在 Pylons を使っている</li>
+<li>Pyramid に移行したいけど、どこから手を付けたらいいか分からない</li>
+<li>Pyramid でオレオレフレームワークが作りたい</li>
+<li>= 数ヶ月前の自分</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="pyramid-faq">
+<h2>Pyramid FAQ</h2>
+<ul class="simple">
+<li>Pyramid と Pylons の関係は?<ul>
+<li>Pyramid は repoze.bfg と Pylons 1.0 が合流してできたウェブフレームワーク</li>
+<li>Pyramid を開発しているプロジェクトの名前は Pylons プロジェクト</li>
+<li>ウェブフレームワークとしての Pylons もまだ現役</li>
+</ul>
+</li>
+<li>repoze.bfg とは何ですか?<ul>
+<li>repoze = Zope 由来のコンポーネントを WSGI アプリケーションで利用
+できるようにしたコンポーネント集</li>
+<li>repoze.bfg = repoze のコンポーネントを再構成したフレームワーク</li>
+</ul>
+</li>
+<li>Pylons 1.0 プロジェクトを Pyramid に移植すべきですか?<ul>
+<li>後で詳しく説明します</li>
+</ul>
+</li>
+<li>Python 3 で動きますか?<ul>
+<li>Pyramid 1.3 以降であれば Python 3.2 以上で動きます (thanks to &#64;aodag)</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="pylons">
+<h2>Pylons に何が起こったか</h2>
+<ul class="simple">
+<li>Pylons 1.0 までは順調に開発が進んだ</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>特に、周辺ライブラリも含めた Pylons スタックは WSGI ベースのフレームワーク
+として代表的な存在に</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>拡張性に深刻な問題があることに気づいた<ul>
+<li>2010年11月 Ben Bangert によるblog記事: &#8220;Why Extending Through
+Subclassing (a framework’s classes) is a Bad Idea&#8221;</li>
+</ul>
+</li>
+<li>Pylons 2 の開発を進めるうちに repoze.bfg と似てきたことで、完全合併の
+方向へとシフト</li>
+</ul>
+</div>
+<div class="section" id="pylons-1-x">
+<h2>Pylons 1.xの何が悪かったのか</h2>
+<ul class="simple">
+<li>Pylons では、フレームワークの提供するベースクラスをサブクラス化する
+ことでプロジェクトを作成<ul>
+<li>ユーザはカスタマイズが必要なメソッドを自由にオーバーライドする</li>
+</ul>
+</li>
+<li>フレームワークを改良したくても、すべての主要なメソッドは事実上の API
+として凍結されていた</li>
+<li>その他の理由<ul>
+<li>パフォーマンスの問題</li>
+<li>単体テストしづらい</li>
+<li>多重継承による奇妙な衝突が発生</li>
+</ul>
+</li>
+<li>結論: サブクラス化によるフレームワークの拡張はすべきでない</li>
+</ul>
+</div>
+<div class="section" id="pyramid">
+<h2>Pyramid の特徴</h2>
+<ul class="simple">
+<li>Pylons と repoze.bfg それぞれに由来する豊富な機能 (※)<ul>
+<li>ルーティング: URLディスパッチ or トラバーサル</li>
+<li>データベースエンジン: SQLAlchemy or ZODB</li>
+<li>テンプレートエンジン: Mako or Chameleon</li>
+<li>アクセス制御: ACL</li>
+<li>scaffold</li>
+<li>インタラクティブデバッガー</li>
+<li>様々な方法でアプリケーションを拡張可能なフック (後述)</li>
+</ul>
+</li>
+<li>これまでの開発の教訓<ul>
+<li>徹底したテストコード</li>
+<li>徹底したドキュメンテーション</li>
+<li>サブクラス化に頼らない拡張方法</li>
+</ul>
+</li>
+</ul>
+<p>※ フレームワークが乱立することを防ぐため、 Pyramid ではフレームワーク内で
+ある程度の機能の重複があることは想定内とされている</p>
+</div>
+<div class="section" id="pylons-1-0-pyramid-3">
+<h2>Pylons 1.0 プロジェクトを Pyramid に移植すべき3つの理由</h2>
+<ul class="simple">
+<li>Pylons 1.0.x は「レガシー」扱いで今後はメンテナンスのみ</li>
+<li>Pyramid の方が (色々な意味で) 強力<ul>
+<li>特に、拡張性が非常に高い</li>
+</ul>
+</li>
+<li>Pyramid for Pylons Users が公開された (2012-06-12)<ul>
+<li>翻訳済み: <a class="reference external" href="http://docs.pylonsproject.jp/projects/pyramid_cookbook-ja/en/latest/pylons/index.html">http://docs.pylonsproject.jp /projects/pyramid_cookbook-ja/en/latest/pylons/index.html</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="pylons-1-0-pyramid">
+<h2>Pylons 1.0 プロジェクトを Pyramid に移植すべきでない理由</h2>
+<ul class="simple">
+<li>Pyramid 自体が開発中<ul>
+<li>例) 1.3.2 で Mako テンプレートの継承ができなくなるバグがあり、
+修正版 (1.3.3) がリリースされるまで 3 ヶ月近くまともに使えなかった</li>
+<li>全体的に Pylons ユーザ向けの機能はまだ弱い</li>
+</ul>
+</li>
+<li>情報が少ない<ul>
+<li>Pylons からの移行に関してはほとんど情報がない</li>
+<li>日本では Pyramid ユーザ自体が少ない (~30人ぐらい?)</li>
+<li>Pylons Project JP <a class="reference external" href="http://www.pylonsproject.jp/">http://www.pylonsproject.jp/</a> にぜひ参加を (宣伝)</li>
+</ul>
+</li>
+<li>結論<ul>
+<li>移行はそれなりに大変なので、もう少し待った方がいいかも</li>
+<li>まずは新規のプロジェクトで Pyramid を試してみる</li>
+<li>既存のプロジェクトに対しては今のうちから移行の準備をしておく</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>Pylons フレームワークと Pyramid の比較</h2>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">詳しく書く</p>
+</div>
+<ul class="simple">
+<li>paster コマンド -&gt; p* コマンド</li>
+<li>scaffold</li>
+<li>ディレクトリレイアウト</li>
+<li>WSGI ミドルウェア -&gt; tween</li>
+<li>main 関数</li>
+<li>ビューとルート (route)</li>
+<li>リソース</li>
+<li>特殊グローバル変数</li>
+<li>レンダラー変数</li>
+<li>HTTP エラーとリダイレクト</li>
+<li>静的ファイル</li>
+<li>セッション</li>
+<li>WSGI サーバ</li>
+<li>アクセス制御</li>
+<li>URL 生成</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h2>移植方法</h2>
+<ul class="simple">
+<li>ゼロから Pyramid で書き直す場合<ul>
+<li>あまり変更せずに使用可能<ul>
+<li>モデル, テンプレート, 静的ファイル</li>
+</ul>
+</li>
+<li>変更が必要<ul>
+<li>コントローラ, route マップ, グローバル変数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h2>移植方法</h2>
+<ul class="simple">
+<li>一度に 1 つずつの URL を移植する場合:
+移植された URL を Pyramid に、移植されていない URL を Pylons に処理させる<ol class="arabic">
+<li>Apache の中で Pyramid と Python の両方のアプリケーションを起動して、
+mod_rewrite を使用して異なる URL を異なるアプリケーションに送る。</li>
+<li>INI ファイルの中で paste.cascade を設定する。<ul>
+<li>最初に片方の アプリケーションを実行してみて、 &#8220;Not Found&#8221; が
+返る場合にはもう片方のアプリケーションを試す
+(Pylons が静的 ファイルを返すのと同じ方法)</li>
+</ul>
+</li>
+<li>Pyramid のビューで Pylons アプリケーションをラップする。</li>
+</ol>
+</li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h2>移植方法</h2>
+<ul class="simple">
+<li>その他の注意<ul>
+<li>複数のアプリケーションを同時に実行すると、データベース接続、セッション、
+データファイルなどで微妙な問題が表面化して調整が必要になる可能性がある</li>
+<li>Pyramid アプリケーションを Python 2 と 3 のどちらで書くかを選択
+しなければならない</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id7">
+<h2>Pyramid の拡張方法</h2>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">詳しく書く</p>
+</div>
+<ul class="simple">
+<li>設定ディレクティブ</li>
+<li>ビューマッパー</li>
+<li>リクエストファクトリ</li>
+<li>イベントシステム</li>
+<li>tween (Pyramid 内の WSGI ミドルウェアのようなもの)</li>
+<li>Zope コンポーネントアーキテクチャ (ZCA)</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to pyconjp2012’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">pyconjp2012 current documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Nozomu Kaneko.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
