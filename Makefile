@@ -58,7 +58,7 @@ singlehtml:
 
 pdf:
 	$(SPHINXBUILD) -b html -D slide_mode=1 -D html_theme=nature $(ALLSPHINXOPTS) $(BUILDDIR)/pdf
-	xhtml2pdf _build/pdf/slide.html _build/pdf/slide.pdf
+	xhtml2pdf $(BUILDDIR)/pdf/slide.html $(BUILDDIR)/pdf/slide.pdf
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 

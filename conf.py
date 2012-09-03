@@ -255,17 +255,25 @@ import docutils.nodes
 class nextpage(docutils.nodes.Element): pass
 
 def visit_nextpage_html(self, node):
-    self.body.append(self.starttag(node, 'div'))
-    self.body.append('<pdf:nextpage />')
+    template = node.attributes.get('template')
+    if template:
+        self.body.append('<pdf:nextpage name="%s" />' % template)
+    else:
+        self.body.append('<pdf:nextpage />')
 
 def depart_nextpage_html(self, node):
-    self.body.append('</div>')
+    pass
 
 def process_nextpage(app, doctree, docname):
     for node in doctree.traverse(docutils.nodes.section):
         if node.parent is doctree and doctree.index(node) == 0:
             continue
-        node.parent.insert(node.parent.index(node), nextpage())
+        attr = {}
+        if node.parent is doctree:
+            attr["template"] = "title"
+        else:
+            attr["template"] = "body"
+        node.parent.insert(node.parent.index(node), nextpage(**attr))
 
 def init_nextpage(app):
     if not app.config.slide_mode:
@@ -274,7 +282,39 @@ def init_nextpage(app):
     app.add_node(nextpage, html=(visit_nextpage_html, depart_nextpage_html))
     app.connect('doctree-resolved', process_nextpage)
 
+def fix_table_border(app):
+    if not app.config.slide_mode:
+        return
+
+    # xhtml2pdf seems to ignore border styles in the css for a table tag
+    # which has border attribute.
+
+    def visit_table_html(self, node):
+        classes = ' '.join(['docutils', self.settings.table_style]).strip()
+        self.body.append(
+            self.starttag(node, 'table', CLASS=classes))
+
+    from sphinx.writers.html import HTMLTranslator as translator
+    translator.visit_table = visit_table_html
+
+def fix_list_paragraph(app):
+    if not app.config.slide_mode:
+        return
+
+    from sphinx.writers.html import HTMLTranslator as translator
+
+    orig_should_be_compact_paragraph = translator.should_be_compact_paragraph
+    def should_be_compact_paragraph(self, node):
+        if orig_should_be_compact_paragraph(self, node):
+            return True
+        if isinstance(node.parent, docutils.nodes.list_item):
+            return True
+        return False
+    translator.should_be_compact_paragraph = should_be_compact_paragraph
+
 def setup(app):
     app.add_config_value('slide_mode', False, True)
     app.connect('builder-inited', init_nextpage)
+    app.connect('builder-inited', fix_table_border)
+    app.connect('builder-inited', fix_list_paragraph)
     app.add_stylesheet('custom.css')
