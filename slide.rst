@@ -46,23 +46,23 @@ Pylons ユーザのための Pyramid 移行ガイド
 - 翻訳とか
 
   - Pythonドキュメント日本語翻訳プロジェクト
-  - Pylons プロジェクトドキュメント / Pyramid ドキュメント
   - PEP 333: Python Web Server Gateway Interface v1.0
   - Pylons 0.9.7 ドキュメント
+  - Pylons プロジェクトドキュメント / Pyramid ドキュメント
 
 - `Pylons Project JP <http://www.pylonsproject.jp/>`_ の中の人
 
-- 実は Pyramid はあまり使ってない (これから...)
+- **実は Pyramid はあまり使ってない** (これから...)
 
-この発表について
---------------------
-
-- こんな人におすすめ
-
-  - 今現在 Pylons を使っている
-  - Pyramid に移行したいけど、どこから手を付けたらいいか分からない
-  - Pyramid でオレオレフレームワークが作りたい
-  - = 数ヶ月前の自分
+.. この発表について
+.. --------------------
+..
+.. - こんな人におすすめ
+..
+..   - 今現在 Pylons を使っている
+..   - Pyramid に移行したいけど、どこから手を付けたらいいか分からない
+..   - Pyramid でオレオレフレームワークが作りたい
+..   - = 数ヶ月前の自分
 
 アジェンダ
 --------------------
@@ -74,12 +74,13 @@ Pylons ユーザのための Pyramid 移行ガイド
   - Pylons 1.x の何が悪かったのか
   - Pyramid の特徴
 
-- 第2部 移植する? しない?
+- 第2部 移植の方針
 
   - Pylons 1.0 プロジェクトを Pyramid に移植すべき3つの理由
   - Pylons 1.0 プロジェクトを Pyramid に移植すべきでない理由
   - 移植方法
   - 移植における注意点
+  - 移植デモ
 
 - 第3部 Pylons と Pyramid の比較
 
@@ -100,19 +101,26 @@ Pyramid FAQ
 
   - ウェブフレームワークとしての Pylons もまだ現役
 
+|br|
+
 - repoze.bfg とは何ですか?
 
   - repoze = Zope 由来のコンポーネントを WSGI アプリケーションで利用
     できるようにしたコンポーネント集
   - repoze.bfg = repoze のコンポーネントを再構成したフレームワーク
 
-- Pylons 1.0 プロジェクトを Pyramid に移植すべきですか?
-
-  - 後で詳しく説明します
+Pyramid FAQ
+--------------------
 
 - Python 3 で動きますか?
 
-  - Pyramid 1.3 以降であれば Python 3.2 以上で動きます (thanks to @aodag)
+  - Pyramid 1.3 から Python 3.2 以上で動きます (thanks to @aodag)
+
+|br|
+
+- Pylons 1.0 プロジェクトを Pyramid に移植すべきですか?
+
+  - 後で詳しく説明します
 
 Pylons に何が起こったか
 ------------------------------
@@ -122,33 +130,36 @@ Pylons に何が起こったか
  - 特に、周辺ライブラリも含めた Pylons スタックは WSGI ベースの
    フレームワークとして代表的な存在に
 
-- 2010年11月 Ben Bangert による blog 記事: "Why Extending Through
-  Subclassing (a framework’s classes) is a Bad Idea"
+- 拡張性に問題があることが分かった
 
-  - 拡張性に深刻な問題があることに気づいた
+  - Ben Bangert による blog 記事 (2010年11月): "Why Extending Through
+    Subclassing (a framework’s classes) is a Bad Idea"
 
-- Pylons 2 の開発を進めるうちに repoze.bfg と似てきたことで、完全合併の
-  方向へとシフト
+- Pylons 2 の開発を進めるうちに repoze.bfg と似てきたことで、コードベース
+  と開発コミュニティをマージする方向へとシフト
 
 - 2011年1月31日 Pyramid 1.0 リリース
 
 Pylons 1.x の何が悪かったのか
 ------------------------------
 
-- フレームワークを改良したくても、すべての主要なメソッドは事実上の API
-  として凍結されていた
+- サブクラス化によるフレームワークの拡張
 
-  - Pylons では、フレームワークの提供するベースクラスをサブクラス化
-    することでプロジェクトを作成
-  - ユーザはカスタマイズが必要なメソッドを自由にオーバーライドする
+  - フレームワークを改良したくても、すべての主要なメソッドは事実上の API
+    として凍結されていた
+  
+    - Pylons では、フレームワークの提供するベースクラスをサブクラス化
+      することでプロジェクトを作成 (BaseController, BaseWSGIApp)
+    - ユーザはカスタマイズが必要なメソッドを自由にオーバーライドする
 
-- その他の理由
-
-  - パフォーマンスの問題
-  - 単体テストしづらい
+  - 過度の継承によるパフォーマンスの問題
+  - フレームワーク内の親クラスに依存するため単体テストしづらい
   - 多重継承による奇妙な衝突が発生
 
-- 結論: サブクラス化によるフレームワークの拡張はすべきでない
+- StackedObjectProxy の使用
+
+  - スレッドローカルかつアプリケーション固有のグローバル変数
+  - 時に混乱の原因となる
 
 Pyramid の特徴
 ------------------------------
@@ -158,22 +169,29 @@ Pyramid の特徴
   - ルーティング: URLディスパッチ or トラバーサル
   - データベースエンジン: SQLAlchemy or ZODB
   - テンプレートエンジン: Mako or Chameleon
-  - アクセス制御: ACL
   - scaffold
   - インタラクティブデバッガー
-  - 様々な方法でアプリケーションを拡張可能なフック (後述)
+  - アクセス制御: ACL
+  - フック
 
-- これまでの開発の教訓
+- これまでの開発で得られた教訓
 
   - 徹底したテストコード
   - 徹底したドキュメンテーション
   - サブクラス化に頼らない拡張方法
 
-※ フレームワークが乱立することを防ぐため、 Pyramid ではフレームワーク内で
-ある程度の機能の重複があることは想定内とされている
+.. note::
+
+   ※ フレームワークが乱立することを防ぐため、 Pyramid ではフレームワーク内で
+   ある程度の機能の重複があることは想定内とされている
+
+.. 新しい用語、概念
+.. トラバーサル
+.. asset spec
+.. リソース
 
 ========================================
-第2部 移植する? しない?
+第2部 移植の方針
 ========================================
 
 Pylons 1.0 プロジェクトを Pyramid に移植すべき3つの理由
@@ -204,27 +222,32 @@ Pylons 1.0 プロジェクトを Pyramid に移植すべきでない理由
   - 日本では Pyramid ユーザ自体が少ない (~30人ぐらい?)
   - Pylons Project JP http://www.pylonsproject.jp/ にぜひ参加を (宣伝)
 
-- 所感
+移植する? しない?
+------------------------------------------------------------
+
+- 注: 個人の感想です
 
   - Pyramid と Pylons は内部がかなり違うので、移植はそれなりに覚悟が必要
   - まずは新規のプロジェクトで Pyramid を試してみる
-  - 既存のプロジェクトを移植する場合は、今のうちから準備をしておく
+  - 既存のプロジェクトを移植する場合は、今のうちから計画を準備しておく
 
 移植の戦略 (1) ゼロから Pyramid で書き直す
 --------------------------------------------------
 
-- あまり変更せずに使用可能
+- あまり変更せずに再利用可能
 
   - モデル, テンプレート, 静的ファイル
 
+|br|
+
 - 変更が必要
 
-  - コントローラ, route マップ, グローバル変数
+  - コントローラ, ルーティング, グローバル変数
 
 移植の戦略 (1) ゼロから Pyramid で書き直す
 --------------------------------------------------
 
-Before Render イベントを使ってレンダラーグローバル変数を追加する例:
+BeforeRender イベントを使ってレンダラーグローバル変数を追加する例:
 
 ::
 
@@ -242,10 +265,10 @@ Before Render イベントを使ってレンダラーグローバル変数を追
             request = get_current_request()
         event["c"] = request.tmpl_context
 
-移植の戦略 (2) 一度に 1 つずつ URL を移植する
+移植の戦略 (2) 共存させつつ徐々に移植する
 --------------------------------------------------
 
-- 2 つのアプリケーションが共存する
+- 一度に 1 つずつ URL を移植する
 
   - 移植された URL -> Pyramid
   - 移植されていない URL -> Pylons
@@ -264,7 +287,7 @@ Before Render イベントを使ってレンダラーグローバル変数を追
 
   - C\) Pyramid のビューで Pylons アプリケーションをラップする
 
-移植の戦略 (2) 一度に 1 つずつ URL を移植する
+移植の戦略 (2) 共存させつつ徐々に移植する
 --------------------------------------------------
 
 NotFound ビューを使用する例:
@@ -300,7 +323,7 @@ NotFound ビューを使用する例:
     - Pyramid が必要とするライブラリもほとんどは Python 3 対応している
     - 一部のライブラリは Python 3 対応していない
 
-      - PIL, Paste, FormEncode, *Pylons*
+      - PIL, Paste, WebHelpers, FormEncode, **Pylons**
 
   - Python 2
 
@@ -310,13 +333,22 @@ NotFound ビューを使用する例:
   - レガシー Pylons アプリケーションで使用しているライブラリのバージョンが
     古いと、 Pyramid と共存することが難しくなる
 
+実際にやってみた
+----------------------------------------
+
+- Pylons の QuickWiki チュートリアルを Pyramid に移植
+
+  - 「ゼロから Pyramid で書き直す」パターン
+
+- https://bitbucket.org/knzm/quickwiki-pyramid/wiki/PatchList
+
 ========================================
 第3部 Pylons と Pyramid の比較
 ========================================
 
 Pylons 流のアプリケーション開発が、 Pyramid に移行することでどう変わるか
 
-paster コマンド -> p* コマンド
+paster コマンド -> p\* コマンド
 ----------------------------------------
 
 .. table::
@@ -340,6 +372,8 @@ scaffold
 
   - Pylons: ``paster create -t <テンプレート名>``
   - Pyramid: ``pcreate -s <scaffold 名>``
+
+|br|
 
 - 標準 scaffold
 
@@ -366,9 +400,10 @@ alchemy scaffold でプロジェクトを作成した場合
 
 - 変更点
 
-  - controllers, lib がなくなった
+  - controllers, config, lib がなくなった
   - views が増えた
   - public が static に名前が変わった
+  - アプリケーションの設定が __init__.py に集約された
 
 main 関数
 --------------------
@@ -380,9 +415,7 @@ main 関数
 
 - Pyramid の main 関数は Pylons の middleware.py, environment.py, routing.py の内容を含む
 
-- Pyramid では Configurator パターンが使われている
-
-  - Pylons よりも設定が簡潔に
+- Pyramid では Configurator を使って Pylons よりも簡潔に設定が行える
 
 - WSGI ミドルウェアはありません
 
@@ -409,7 +442,7 @@ Pyramid の main 関数の例:
 
 - Pylons の場合
 
-  - ルーティングの登録は ``map.connect()`` で行う
+  - ルーティングの登録は map.connect() で行う
 
     - ``map.connect('/article/{id}', controller='article', action='show')``
 
@@ -434,18 +467,37 @@ Pyramid の main 関数の例:
 
     - 関数、クラス、 ``__call__`` メソッドを 実装したインスタンス
 
+view_config のパラメータ
+------------------------------
+
+- 述語引数
+
+  - route_name
+  - context
+  - request_method
+  - request_param
+  - match_param
+  - custom_predicates
+
+- 非述語引数
+
+  - renderer
+  - permission
+  - http_cache
+
 リソース
 --------------------
 
 - 「トラバース」というルーティング方式を使う場合に重要な概念
 
-- URL ディスパッチ (Pylons と同様のルーティング方式) を使う場合は、あまり意識しなくていい
+- URL ディスパッチ (Pylons と同様のルーティング方式) を使う場合は、
+  あまり意識しなくていい
 
   - 重要なのは root リソースのみ
 
 - 使い方
 
-  - ロジックの定義
+  - ビジネスロジックの定義
   - セキュリティ
 
 リソースの使用例
@@ -469,7 +521,6 @@ Pyramid の main 関数の例:
 ::
 
   config.add_route('abc', '/abc', factory=Resource)
-
 
 特殊グローバル変数
 --------------------
@@ -511,7 +562,7 @@ pylons.app_globals
 特殊グローバル変数
 --------------------
 
-pylons.url
+pylons.url (h.url_for)
 
 - request が URL 生成のためのメソッドを持っている
 
@@ -524,7 +575,14 @@ pylons.url
 
 pylons.session
 
-- ``pyramid_beaker`` 拡張を有効にすると使えるようになる
+- ``request.session``
+- ``pyramid_beaker`` 拡張を有効にするか、 Configurator に session_factory を渡す
+
+::
+
+  from pyramid.session import UnencryptedCookieSessionFactoryConfig
+  session_factory = UnencryptedCookieSessionFactoryConfig('secret')
+  config = Configurator(session_factory=session_factory)
 
 |br|
 
@@ -560,6 +618,8 @@ HTTNotFound と HTTPForbidden は Pyramid 内部でも発生する
 
 例外ビュー
 --------------------
+
+特定の例外が起きたときに呼び出されるビューのこと。
 
 ::
 
@@ -618,12 +678,23 @@ HTTNotFound と HTTPForbidden は Pyramid 内部でも発生する
     - ``config.add_static_view(name='http://staticserver.com/', path='static')``
     - ``name`` 引数の値を設定で切り替えることも
 
-- pyramid_assetviews というパッケージを使うとトップレベルのファイル URL を簡単に設定できる
+- pyramid_assetviews というパッケージを使うとトップレベルのファイル URL を簡単に設定できる (らしい)
 
   ::
 
     config.include("pyramid_assetviews")
     config.add_asset_views("static", ["robots.txt", "favicon.ico"])
+
+asset spec
+--------------------
+
+- パッケージ内のファイルを参照する方法
+
+- パッケージ名と相対パスをコロンで繋げる
+
+  - 例: ``my.package:static/baz.css``
+
+- テンプレートと静的ファイルのパスを指定する箇所で使用できる
 
 セッション
 --------------------
@@ -659,8 +730,31 @@ HTTNotFound と HTTPForbidden は Pyramid 内部でも発生する
 .. WSGI サーバ
 .. --------------------
 
+========================================
+おわりに
+========================================
+
+まとめ
+------------------------------
+
+- Pyramid に移行するメリットはある
+
+  - 最新のライブラリへの追従
+  - 拡張性
+
+- 既存の Pylons アプリケーションの移植は慎重に考える必要あり
+
+- 移植の戦略
+
+  - ゼロから Pyramid で書き直す
+  - 共存させつつ徐々に移植する
+
 Pyramid の拡張方法
 ------------------------------
+
+※時間の関係で今回は割愛しました (いずれどこかで発表したい)
+
+|br|
 
 - 設定ディレクティブ
 - ビューマッパー
@@ -669,5 +763,16 @@ Pyramid の拡張方法
 - tween (Pyramid 内の WSGI ミドルウェアのようなもの)
 - Zope コンポーネントアーキテクチャ (ZCA)
 
-まとめ
+情報源
 ------------------------------
+
+- Pylons Project JP http://www.pylonsproject.jp/
+- facebookグループ pylonsproject.jp
+- Pyramid ドキュメント (翻訳) http://docs.pylonsproject.jp/projects/pyramid-doc-ja/en/latest/
+- Pylons ユーザのための Pyramid (翻訳) `http://docs.pylonsproject.jp/projects/pyramid_cookbook-ja /en/latest/pylons/index.html <http://docs.pylonsproject.jp/projects/pyramid_cookbook-ja/en/latest/pylons/index.html>`_
+
+========================================
+Thank you!
+========================================
+
+ご清聴ありがとうございました

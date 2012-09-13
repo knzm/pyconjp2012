@@ -257,9 +257,9 @@ class nextpage(docutils.nodes.Element): pass
 def visit_nextpage_html(self, node):
     template = node.attributes.get('template')
     if template:
-        self.body.append('<pdf:nextpage name="%s" />' % template)
+        self.body.append('<pdf:nextpage name="%s"></pdf:nextpage>' % template)
     else:
-        self.body.append('<pdf:nextpage />')
+        self.body.append('<pdf:nextpage></pdf:nextpage>')
 
 def depart_nextpage_html(self, node):
     pass

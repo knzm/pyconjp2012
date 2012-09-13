@@ -5,7 +5,7 @@
 
 @page {
   size: A4 landscape;
-  margin: 1.0cm;
+  margin: 5mm 1.0cm;
   /*background: url(_static/pylons.png) no-repeat right bottom;*/
 
   @frame footer {
@@ -30,6 +30,10 @@
 body {
   font-size: 24pt;
   line-height: 120%;
+}
+
+div.body p, div.body dd, div.body li {
+  line-height: 1.5em;
 }
 
 body, pre, tt,
@@ -73,6 +77,10 @@ pre {
 }
 
 em {
+  text-decoration: underline;
+}
+
+strong {
   color: red;
 }
 
@@ -91,6 +99,34 @@ a {
   text-decoration: inherit;
 }
 
+/*
+a:link, a:visited {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+a:hover, a:active, a {
+  color: #0000ff;
+  text-decoration: underline;
+}
+*/
+
 tt {
   background: none;
+}
+
+p.admonition-title {
+  display: none;
+}
+
+div.admonition p.admonition-title + p {
+  display: inline;
+}
+
+div.note {
+  border: 2px solid #ccc;
+  border-right-style: none;
+  border-left-style: none;
+  padding: 10px 20px 10px 20px;
+  background: #eee;
 }
