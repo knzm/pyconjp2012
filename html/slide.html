@@ -55,7 +55,9 @@
             
   <div class="section" id="pylons-pyramid">
 <h1>Pylons ユーザのための Pyramid 移行ガイド</h1>
-<table class="docutils field-list" frame="void" rules="none">
+<div id="footer-content">
+  #<pdf:pagenumber />
+</div><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -73,31 +75,23 @@
 <h2>お前誰よ</h2>
 <div class="right">
   <img src="_static/danboard_off2.jpg" width="73" height="73" />
-</div><ul>
-<li><p class="first">Twitter: &#64;knzm2011</p>
-</li>
-<li><p class="first">勤務先: TriAx (Silver スポンサー)</p>
-</li>
-<li><p class="first">Pylons を使い始めて5年ぐらい</p>
-<ul class="simple">
+</div><ul class="simple">
+<li>金子望 (Twitter: &#64;knzm2011)</li>
+<li>勤務先: トライアックス株式会社</li>
+<li>Pylons を使い始めて5年ぐらい<ul>
 <li>Python 歴もだいたい同じくらい</li>
-<li>入社後に Python に触り始めて、気がついたら CMS フレームワークを作ってた</li>
+<li>入社後に Python を使い始めて、気がついたら CMS フレームワークを作ってた</li>
 </ul>
 </li>
-<li><p class="first">翻訳とか</p>
-<ul class="simple">
+<li>翻訳とか<ul>
 <li>Pythonドキュメント日本語翻訳プロジェクト</li>
-<li>Pylons プロジェクトドキュメント / Pyramid ドキュメント</li>
 <li>PEP 333: Python Web Server Gateway Interface v1.0</li>
-</ul>
-<ul class="simple">
 <li>Pylons 0.9.7 ドキュメント</li>
+<li>Pylons プロジェクトドキュメント / Pyramid ドキュメント</li>
 </ul>
 </li>
-<li><p class="first"><a class="reference external" href="http://www.pylonsproject.jp/">Pylons Project JP</a> の中の人</p>
-</li>
-<li><p class="first">実は Pyramid はあまり使ってない (これから...)</p>
-</li>
+<li><a class="reference external" href="http://www.pylonsproject.jp/">Pylons Project JP</a> の中の人</li>
+<li><strong>実は Pyramid はあまり使ってない</strong> (これから...)</li>
 </ul>
 </div>
 <div class="section" id="id2">
@@ -112,27 +106,65 @@
 </li>
 </ul>
 </div>
+<div class="section" id="id3">
+<h2>アジェンダ</h2>
+<ul class="simple">
+<li>第1部 Pyramid の概要<ul>
+<li>Pyramid FAQ</li>
+<li>Pylons に何が起こったか</li>
+<li>Pylons 1.x の何が悪かったのか</li>
+<li>Pyramid の特徴</li>
+</ul>
+</li>
+<li>第2部 移植の方針<ul>
+<li>Pylons 1.0 プロジェクトを Pyramid に移植すべき3つの理由</li>
+<li>Pylons 1.0 プロジェクトを Pyramid に移植すべきでない理由</li>
+<li>移植方法</li>
+<li>移植における注意点</li>
+</ul>
+</li>
+<li>第3部 Pylons と Pyramid の比較</li>
+</ul>
+</div>
+</div>
+<div class="section" id="pyramid">
+<h1>第1部 Pyramid の概要</h1>
 <div class="section" id="pyramid-faq">
 <h2>Pyramid FAQ</h2>
 <ul class="simple">
 <li>Pyramid と Pylons の関係は?<ul>
-<li>Pyramid は repoze.bfg と Pylons 1.0 が合流してできたウェブフレームワーク</li>
+<li>repoze.bfg と Pylons 1.0 という 2 つのウェブフレームワークが合流して
+Pyramid ができた<ul>
+<li>コードベースは repoze.bfg</li>
 <li>Pyramid を開発しているプロジェクトの名前は Pylons プロジェクト</li>
+</ul>
+</li>
 <li>ウェブフレームワークとしての Pylons もまだ現役</li>
 </ul>
 </li>
+</ul>
+<p><br /></p>
+<ul class="simple">
 <li>repoze.bfg とは何ですか?<ul>
 <li>repoze = Zope 由来のコンポーネントを WSGI アプリケーションで利用
 できるようにしたコンポーネント集</li>
 <li>repoze.bfg = repoze のコンポーネントを再構成したフレームワーク</li>
 </ul>
 </li>
-<li>Pylons 1.0 プロジェクトを Pyramid に移植すべきですか?<ul>
-<li>後で詳しく説明します</li>
 </ul>
-</li>
+</div>
+<div class="section" id="id4">
+<h2>Pyramid FAQ</h2>
+<ul class="simple">
 <li>Python 3 で動きますか?<ul>
 <li>Pyramid 1.3 以降であれば Python 3.2 以上で動きます (thanks to &#64;aodag)</li>
+</ul>
+</li>
+</ul>
+<p><br /></p>
+<ul class="simple">
+<li>Pylons 1.0 プロジェクトを Pyramid に移植すべきですか?<ul>
+<li>後で詳しく説明します</li>
 </ul>
 </li>
 </ul>
@@ -144,62 +176,69 @@
 </ul>
 <blockquote>
 <div><ul class="simple">
-<li>特に、周辺ライブラリも含めた Pylons スタックは WSGI ベースのフレームワーク
-として代表的な存在に</li>
+<li>特に、周辺ライブラリも含めた Pylons スタックは WSGI ベースの
+フレームワークとして代表的な存在に</li>
 </ul>
 </div></blockquote>
 <ul class="simple">
-<li>拡張性に深刻な問題があることに気づいた<ul>
-<li>2010年11月 Ben Bangert によるblog記事: &#8220;Why Extending Through
-Subclassing (a framework’s classes) is a Bad Idea&#8221;</li>
+<li>2010年11月 Ben Bangert による blog 記事: &#8220;Why Extending Through
+Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
+<li>拡張性に深刻な問題があることに気づいた</li>
 </ul>
 </li>
 <li>Pylons 2 の開発を進めるうちに repoze.bfg と似てきたことで、完全合併の
 方向へとシフト</li>
+<li>2011年1月31日 Pyramid 1.0 リリース</li>
 </ul>
 </div>
 <div class="section" id="pylons-1-x">
-<h2>Pylons 1.xの何が悪かったのか</h2>
+<h2>Pylons 1.x の何が悪かったのか</h2>
 <ul class="simple">
-<li>Pylons では、フレームワークの提供するベースクラスをサブクラス化する
-ことでプロジェクトを作成<ul>
+<li>フレームワークを改良したくても、すべての主要なメソッドは事実上の API
+として凍結されていた<ul>
+<li>Pylons では、フレームワークの提供するベースクラスをサブクラス化
+することでプロジェクトを作成</li>
 <li>ユーザはカスタマイズが必要なメソッドを自由にオーバーライドする</li>
 </ul>
 </li>
-<li>フレームワークを改良したくても、すべての主要なメソッドは事実上の API
-として凍結されていた</li>
 <li>その他の理由<ul>
 <li>パフォーマンスの問題</li>
 <li>単体テストしづらい</li>
 <li>多重継承による奇妙な衝突が発生</li>
 </ul>
 </li>
-<li>結論: サブクラス化によるフレームワークの拡張はすべきでない</li>
+<li>結論: <strong>サブクラス化によるフレームワークの拡張はすべきでない</strong></li>
 </ul>
 </div>
-<div class="section" id="pyramid">
+<div class="section" id="id5">
 <h2>Pyramid の特徴</h2>
 <ul class="simple">
 <li>Pylons と repoze.bfg それぞれに由来する豊富な機能 (※)<ul>
 <li>ルーティング: URLディスパッチ or トラバーサル</li>
 <li>データベースエンジン: SQLAlchemy or ZODB</li>
 <li>テンプレートエンジン: Mako or Chameleon</li>
-<li>アクセス制御: ACL</li>
 <li>scaffold</li>
 <li>インタラクティブデバッガー</li>
-<li>様々な方法でアプリケーションを拡張可能なフック (後述)</li>
+<li>アクセス制御: ACL</li>
+<li>フック</li>
 </ul>
 </li>
-<li>これまでの開発の教訓<ul>
+<li>これまでの開発で得られた教訓<ul>
 <li>徹底したテストコード</li>
 <li>徹底したドキュメンテーション</li>
 <li>サブクラス化に頼らない拡張方法</li>
 </ul>
 </li>
 </ul>
-<p>※ フレームワークが乱立することを防ぐため、 Pyramid ではフレームワーク内で
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">※ フレームワークが乱立することを防ぐため、 Pyramid ではフレームワーク内で
 ある程度の機能の重複があることは想定内とされている</p>
 </div>
+</div>
+</div>
+<div class="section" id="id6">
+<h1>第2部 移植の方針</h1>
 <div class="section" id="pylons-1-0-pyramid-3">
 <h2>Pylons 1.0 プロジェクトを Pyramid に移植すべき3つの理由</h2>
 <ul class="simple">
@@ -224,47 +263,22 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;</li>
 </ul>
 </li>
 <li>情報が少ない<ul>
-<li>Pylons からの移行に関してはほとんど情報がない</li>
+<li>Pylons (特に大規模プロジェクト) からの移行に関してはあまり情報がない</li>
 <li>日本では Pyramid ユーザ自体が少ない (~30人ぐらい?)</li>
 <li>Pylons Project JP <a class="reference external" href="http://www.pylonsproject.jp/">http://www.pylonsproject.jp/</a> にぜひ参加を (宣伝)</li>
 </ul>
 </li>
-<li>結論<ul>
-<li>移行はそれなりに大変なので、もう少し待った方がいいかも</li>
+<li>所感<ul>
+<li>Pyramid と Pylons は内部がかなり違うので、移植はそれなりに覚悟が必要</li>
 <li>まずは新規のプロジェクトで Pyramid を試してみる</li>
-<li>既存のプロジェクトに対しては今のうちから移行の準備をしておく</li>
+<li>既存のプロジェクトを移植する場合は、今のうちから準備をしておく</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h2>Pylons フレームワークと Pyramid の比較</h2>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">詳しく書く</p>
-</div>
+<div class="section" id="id7">
+<h2>移植の戦略 (1) ゼロから Pyramid で書き直す</h2>
 <ul class="simple">
-<li>paster コマンド -&gt; p* コマンド</li>
-<li>scaffold</li>
-<li>ディレクトリレイアウト</li>
-<li>WSGI ミドルウェア -&gt; tween</li>
-<li>main 関数</li>
-<li>ビューとルート (route)</li>
-<li>リソース</li>
-<li>特殊グローバル変数</li>
-<li>レンダラー変数</li>
-<li>HTTP エラーとリダイレクト</li>
-<li>静的ファイル</li>
-<li>セッション</li>
-<li>WSGI サーバ</li>
-<li>アクセス制御</li>
-<li>URL 生成</li>
-</ul>
-</div>
-<div class="section" id="id4">
-<h2>移植方法</h2>
-<ul class="simple">
-<li>ゼロから Pyramid で書き直す場合<ul>
 <li>あまり変更せずに使用可能<ul>
 <li>モデル, テンプレート, 静的ファイル</li>
 </ul>
@@ -274,45 +288,447 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;</li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
 </div>
-<div class="section" id="id5">
-<h2>移植方法</h2>
+<div class="section" id="id8">
+<h2>移植の戦略 (1) ゼロから Pyramid で書き直す</h2>
+<p>Before Render イベントを使ってレンダラーグローバル変数を追加する例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyramid.events</span> <span class="kn">import</span> <span class="n">subscriber</span>
+<span class="kn">from</span> <span class="nn">pyramid.events</span> <span class="kn">import</span> <span class="n">BeforeRender</span>
+<span class="kn">from</span> <span class="nn">pyramid.threadlocal</span> <span class="kn">import</span> <span class="n">get_current_request</span>
+
+<span class="kn">from</span> <span class="nn">mypylonsproject.lib</span> <span class="kn">import</span> <span class="n">helpers</span>
+
+<span class="nd">@subscriber</span><span class="p">(</span><span class="n">BeforeRender</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_renderer_globals</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="n">event</span><span class="p">[</span><span class="s">&quot;h&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">helpers</span>
+    <span class="n">request</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;request&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">get_current_request</span><span class="p">()</span>
+    <span class="n">event</span><span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">tmpl_context</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="url">
+<h2>移植の戦略 (2) 一度に 1 つずつ URL を移植する</h2>
 <ul class="simple">
-<li>一度に 1 つずつの URL を移植する場合:
-移植された URL を Pyramid に、移植されていない URL を Pylons に処理させる<ol class="arabic">
-<li>Apache の中で Pyramid と Python の両方のアプリケーションを起動して、
-mod_rewrite を使用して異なる URL を異なるアプリケーションに送る。</li>
-<li>INI ファイルの中で paste.cascade を設定する。<ul>
-<li>最初に片方の アプリケーションを実行してみて、 &#8220;Not Found&#8221; が
-返る場合にはもう片方のアプリケーションを試す
-(Pylons が静的 ファイルを返すのと同じ方法)</li>
+<li>2 つのアプリケーションが共存する<ul>
+<li>移植された URL -&gt; Pyramid</li>
+<li>移植されていない URL -&gt; Pylons</li>
 </ul>
 </li>
-<li>Pyramid のビューで Pylons アプリケーションをラップする。</li>
-</ol>
+<li>選択肢<ul>
+<li>A) mod_rewrite を使用する<ul>
+<li>Pyramid と Pylons の両方のアプリケーションが別プロセスで実行される</li>
+</ul>
+</li>
+<li>B) INI ファイルの中で paste.cascade を設定する<ul>
+<li>最初に片方のアプリケーションを実行してみて、 &#8220;Not Found&#8221; が
+返る場合にはもう片方のアプリケーションを試す</li>
+<li>Pylons が静的 ファイルを返すのと同じ方法</li>
+</ul>
+</li>
+<li>C) Pyramid のビューで Pylons アプリケーションをラップする</li>
+</ul>
 </li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h2>移植方法</h2>
+<div class="section" id="id9">
+<h2>移植の戦略 (2) 一度に 1 つずつ URL を移植する</h2>
+<p>NotFound ビューを使用する例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mypylonsproject</span> <span class="kn">import</span> <span class="n">thepylonsapp</span>
+
+<span class="k">class</span> <span class="nc">LegacyView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+   <span class="n">legacy_view</span> <span class="o">=</span> <span class="n">LegacyView</span><span class="p">(</span><span class="n">thepylonsapp</span><span class="p">)</span>
+   <span class="n">config</span> <span class="o">=</span> <span class="n">Configurator</span><span class="p">()</span>
+   <span class="n">config</span><span class="o">.</span><span class="n">add_notfound_view</span><span class="p">(</span><span class="n">legacy_view</span><span class="p">)</span>
+   <span class="c"># ... rest of config ...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id10">
+<h2>移植における注意点</h2>
 <ul class="simple">
-<li>その他の注意<ul>
-<li>複数のアプリケーションを同時に実行すると、データベース接続、セッション、
-データファイルなどで微妙な問題が表面化して調整が必要になる可能性がある</li>
-<li>Pyramid アプリケーションを Python 2 と 3 のどちらで書くかを選択
-しなければならない</li>
+<li>複数のアプリケーションを同時に実行する際に調整が必要な箇所<ul>
+<li>データベース接続、セッション、データファイルなど</li>
+</ul>
+</li>
+<li>Pyramid アプリケーションを Python 2 と 3 のどちらで書くかは重要<ul>
+<li>Python 3<ul>
+<li>Pyramid は Python 3 対応済み</li>
+<li>Pyramid が必要とするライブラリもほとんどは Python 3 対応している</li>
+<li>一部のライブラリは Python 3 対応していない<ul>
+<li>PIL, Paste, FormEncode, <strong>Pylons</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Python 2<ul>
+<li>Pyramid は Python 2.6 以上で動作</li>
+<li>多くのライブラリで Python 2.5 以下は徐々にサポートが打ち切られている</li>
+</ul>
+</li>
+<li>レガシー Pylons アプリケーションで使用しているライブラリのバージョンが
+古いと、 Pyramid と共存することが難しくなる</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section" id="id7">
+</div>
+<div class="section" id="id11">
+<h1>第3部 Pylons と Pyramid の比較</h1>
+<p>Pylons 流のアプリケーション開発が、 Pyramid に移行することでどう変わるか</p>
+<div class="section" id="paster-p">
+<h2>paster コマンド -&gt; p* コマンド</h2>
+<table border="1" class="table docutils">
+<colgroup>
+<col width="31%" />
+<col width="31%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Pylons</th>
+<th class="head">Pyramid</th>
+<th class="head">備考</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>paster create</td>
+<td>pcreate</td>
+<td>オプション -t =&gt; -s</td>
+</tr>
+<tr class="row-odd"><td>paster serve</td>
+<td>pserve</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>paster shell</td>
+<td>pshell</td>
+<td>初期設定される変数が違う</td>
+</tr>
+<tr class="row-odd"><td>paster setup-app</td>
+<td>initialize_App_db</td>
+<td>App はアプリケーション名</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="scaffold">
+<h2>scaffold</h2>
+<ul class="simple">
+<li>新しくプロジェクトを開始する場合<ul>
+<li>Pylons: <tt class="docutils literal"><span class="pre">paster</span> <span class="pre">create</span> <span class="pre">-t</span> <span class="pre">&lt;テンプレート名&gt;</span></tt></li>
+<li>Pyramid: <tt class="docutils literal"><span class="pre">pcreate</span> <span class="pre">-s</span> <span class="pre">&lt;scaffold</span> <span class="pre">名&gt;</span></tt></li>
+</ul>
+</li>
+</ul>
+<p><br /></p>
+<ul class="simple">
+<li>標準 scaffold<ul>
+<li>alchemy: URL ディスパッチ、 SQLAlchemy</li>
+<li>starter: URL ディスパッチ、データベースなし</li>
+<li>zodb: トラバーサル、 ZODB</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id12">
+<h2>ディレクトリレイアウト</h2>
+<p>alchemy scaffold でプロジェクトを作成した場合</p>
+<div class="highlight-python"><pre>PyramidApp/
+├── development.ini, production.ini
+├── setup.py, setup.cfg
+├── pyramidapp/
+│   ├── __init__.py, models.py, views.py, tests.py
+│   ├── templates/
+│   ├── static/
+│   └── scripts/
+└── PyramidApp.egg-info/</pre>
+</div>
+<ul class="simple">
+<li>変更点<ul>
+<li>controllers, config, lib がなくなった</li>
+<li>views が増えた</li>
+<li>public が static に名前が変わった</li>
+<li>アプリケーションの設定が __init__.py に集約された</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="main">
+<h2>main 関数</h2>
+<ul class="simple">
+<li>アプリケーションを返すトップレベルの関数<ul>
+<li>Pylons: <tt class="file docutils literal"><span class="pre">pylonsapp/config/middleware.py</span></tt> の <tt class="docutils literal"><span class="pre">make_app</span></tt> 関数</li>
+<li>Pyramid: <tt class="file docutils literal"><span class="pre">pyramidapp/__init__.py</span></tt> の <tt class="docutils literal"><span class="pre">main</span></tt> 関数</li>
+</ul>
+</li>
+<li>Pyramid の main 関数は Pylons の middleware.py, environment.py, routing.py の内容を含む</li>
+<li>Pyramid では Configurator パターンが使われている<ul>
+<li>Pylons よりも設定が簡潔に</li>
+</ul>
+</li>
+<li>WSGI ミドルウェアはありません</li>
+</ul>
+</div>
+<div class="section" id="id13">
+<h2>main 関数</h2>
+<p>Pyramid の main 関数の例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyramid.config</span> <span class="kn">import</span> <span class="n">Configurator</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">global_config</span><span class="p">,</span> <span class="o">**</span><span class="n">settings</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; This function returns a Pyramid WSGI application.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">Configurator</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">)</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">add_static_view</span><span class="p">(</span><span class="s">&#39;static&#39;</span><span class="p">,</span> <span class="s">&#39;static&#39;</span><span class="p">,</span> <span class="n">cache_max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s">&#39;home&#39;</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="p">)</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">scan</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">make_wsgi_app</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id14">
+<h2>ルーティングとビュー</h2>
+<ul class="simple">
+<li>Pylons の場合<ul>
+<li>ルーティングの登録は map.connect() で行う<ul>
+<li><tt class="docutils literal"><span class="pre">map.connect('/article/{id}',</span> <span class="pre">controller='article',</span> <span class="pre">action='show')</span></tt></li>
+</ul>
+</li>
+<li>controllers ディレクトリの同名のコントローラが呼ばれる</li>
+<li>コントローラは BaseController を継承したクラス</li>
+</ul>
+</li>
+<li>Pyramid の場合<ul>
+<li>ルーティングの登録とビューの登録が分かれている<ul>
+<li>ルーティングの登録<ul>
+<li><tt class="docutils literal"><span class="pre">config.add_route('article_page',</span> <span class="pre">'article/{id}')</span></tt></li>
+</ul>
+</li>
+<li>ビューの登録<ul>
+<li><tt class="docutils literal"><span class="pre">config.add_view()</span></tt> または <tt class="docutils literal"><span class="pre">&#64;view_config</span></tt> デコレータ</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ルーティングは必ず名前を持つ</li>
+<li>ビューは任意の callable オブジェクトを指定できる<ul>
+<li>関数、クラス、 <tt class="docutils literal"><span class="pre">__call__</span></tt> メソッドを 実装したインスタンス</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="view-config">
+<h2>view_config</h2>
+</div>
+<div class="section" id="id15">
+<h2>リソース</h2>
+<ul class="simple">
+<li>「トラバース」というルーティング方式を使う場合に重要な概念</li>
+<li>URL ディスパッチ (Pylons と同様のルーティング方式) を使う場合は、あまり意識しなくていい<ul>
+<li>重要なのは root リソースのみ</li>
+</ul>
+</li>
+<li>使い方<ul>
+<li>ロジックの定義</li>
+<li>セキュリティ</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id16">
+<h2>リソースの使用例</h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Resource</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">__acl__</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">Allow</span><span class="p">,</span> <span class="n">Everyone</span><span class="p">,</span> <span class="s">&#39;view&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">Allow</span><span class="p">,</span> <span class="s">&#39;group:editors&#39;</span><span class="p">,</span> <span class="s">&#39;edit&#39;</span><span class="p">),</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">request</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">Configurator</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">,</span> <span class="n">root_factory</span><span class="o">=</span><span class="n">Resource</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>個別のルーティングで使うリソースを指定する場合</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">config</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s">&#39;abc&#39;</span><span class="p">,</span> <span class="s">&#39;/abc&#39;</span><span class="p">,</span> <span class="n">factory</span><span class="o">=</span><span class="n">Resource</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id17">
+<h2>特殊グローバル変数</h2>
+<p>pylons.request</p>
+<ul class="simple">
+<li>ビュー関数の中では <tt class="docutils literal"><span class="pre">request</span></tt> 引数</li>
+<li>クラスベースのビューメソッドの中では <tt class="docutils literal"><span class="pre">self.request</span></tt></li>
+<li>テンプレートの中では、 <tt class="docutils literal"><span class="pre">request</span></tt> あるいは <tt class="docutils literal"><span class="pre">req</span></tt></li>
+<li>それ以外の場所では <tt class="docutils literal"><span class="pre">pyramid.threadlocal.get_current_request()</span></tt>
+を呼び出して <tt class="docutils literal"><span class="pre">request</span></tt> を取得可能 <br />
+(pshell やユニットテストなどで <tt class="docutils literal"><span class="pre">request</span></tt> オブジェクトが渡ってこない場合)</li>
+</ul>
+<p><br /></p>
+<p>pylons.response</p>
+<ul class="simple">
+<li>Pyramid にはグローバルなレスポンスオブジェクトはない</li>
+</ul>
+</div>
+<div class="section" id="id18">
+<h2>特殊グローバル変数</h2>
+<p>pylons.tmpl_context, pylons.c</p>
+<ul class="simple">
+<li>テンプレートに変数を渡したい場合、ビューから dict を返すとレンダラー経由で
+テンプレートに渡る</li>
+<li>※過去に <tt class="docutils literal"><span class="pre">request.tmpl_context</span></tt> が導入されたが、後に廃止された</li>
+</ul>
+</div>
+<div class="section" id="id19">
+<h2>特殊グローバル変数</h2>
+<p>pylons.app_globals</p>
+<ul class="simple">
+<li>最も近い等価物は <tt class="docutils literal"><span class="pre">request.registry</span></tt> か <tt class="docutils literal"><span class="pre">request.registry.settings</span></tt></li>
+<li>レジストリは Pyramid によって内部で使用されるシングルトン</li>
+<li><tt class="docutils literal"><span class="pre">request.registry.settings</span></tt> は通常アプリケーションの設定が格納される</li>
+</ul>
+</div>
+<div class="section" id="id20">
+<h2>特殊グローバル変数</h2>
+<p>pylons.url</p>
+<ul class="simple">
+<li>request が URL 生成のためのメソッドを持っている<ul>
+<li><tt class="docutils literal"><span class="pre">request.route_url()</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">request.static_url()</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">request.resource_url()</span></tt></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id21">
+<h2>特殊グローバル変数</h2>
+<p>pylons.session</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">pyramid_beaker</span></tt> 拡張を有効にすると使えるようになる</li>
+</ul>
+<p><br /></p>
+<p>pylons.cache</p>
+<ul class="simple">
+<li>Pyramid はキャッシュ機能を内蔵していない</li>
+<li><tt class="docutils literal"><span class="pre">pyramid_beaker</span></tt> 拡張を使用する</li>
+</ul>
+</div>
+<div class="section" id="http">
+<h2>HTTP エラーとリダイレクト</h2>
+<p>Pylons の場合 (コントローラの中で):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>   <span class="c"># Not Found</span>
+<span class="n">abort</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>   <span class="c"># Internal server error</span>
+<span class="n">redirect</span><span class="p">(</span><span class="n">url</span><span class="p">(</span><span class="s">&quot;section1&quot;</span><span class="p">))</span>   <span class="c"># リダイレクト</span>
+</pre></div>
+</div>
+<p>Pyramid の場合 (ビューの中で):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">HTTPNotFound</span><span class="p">()</span>            <span class="c"># Not Found</span>
+<span class="k">return</span> <span class="n">exc</span><span class="o">.</span><span class="n">HTTPNotFound</span><span class="p">()</span>           <span class="c"># 戻り値として返すこともできる</span>
+<span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">HTTPInernalServerError</span><span class="p">()</span>  <span class="c"># Internal server error</span>
+<span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">HTTPFound</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">route_url</span><span class="p">(</span><span class="s">&quot;section1&quot;</span><span class="p">))</span>   <span class="c"># リダイレクト</span>
+</pre></div>
+</div>
+<p>HTTNotFound と HTTPForbidden は Pyramid 内部でも発生する</p>
+</div>
+<div class="section" id="id22">
+<h2>例外ビュー</h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">ValidationFailure</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+
+<span class="nd">@view_config</span><span class="p">(</span><span class="n">route_name</span><span class="o">=</span><span class="s">&#39;home&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="n">ValidationFailure</span><span class="p">(</span><span class="s">&#39;some error&#39;</span><span class="p">)</span>
+
+<span class="nd">@view_config</span><span class="p">(</span><span class="n">route_name</span><span class="o">=</span><span class="s">&#39;home&#39;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">ValidationFailure</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">failed_validation</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="s">&#39;Failed validation: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">exc</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id23">
+<h2>静的ファイル</h2>
+<ul>
+<li><p class="first">Pyramid で静的ファイルを返す標準の方法</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">config</span><span class="o">.</span><span class="n">add_static_view</span><span class="p">(</span><span class="s">&#39;static&#39;</span><span class="p">,</span> <span class="s">&#39;static&#39;</span><span class="p">,</span> <span class="n">cache_max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>静的 URLにプレフィックス &#8220;/static&#8221; が付く</li>
+<li>トップレベルのファイル URL を返せない</li>
+</ul>
+</li>
+<li><p class="first">どうするか</p>
+<ul>
+<li><p class="first">favicon.ico</p>
+<div class="highlight-python"><pre>&lt;link rel="shortcut icon"
+ href="${request.static_url('pyramidapp:static/favicon.ico')}" /&gt;</pre>
+</div>
+</li>
+<li><p class="first">robots.txt</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Alias</span> <span class="o">/</span><span class="n">robots</span><span class="o">.</span><span class="n">txt</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">static</span><span class="o">/</span><span class="n">norobots</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id24">
+<h2>静的ファイル</h2>
+<ul>
+<li><p class="first">高度な使い方</p>
+<ul class="simple">
+<li>複数のパスを設定する<ul>
+<li><tt class="docutils literal"><span class="pre">config.add_static_view(name='images',</span> <span class="pre">path='static/images')</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">config.add_static_view(name='css',</span> <span class="pre">path='static/css')</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">config.add_static_view(name='js',</span> <span class="pre">path='static/js')</span></tt></li>
+</ul>
+</li>
+<li>外部の静的メディアサーバを使う<ul>
+<li><tt class="docutils literal"><span class="pre">config.add_static_view(name='http://staticserver.com/',</span> <span class="pre">path='static')</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">name</span></tt> 引数の値を設定で切り替えることも</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p class="first">pyramid_assetviews というパッケージを使うとトップレベルのファイル URL を簡単に設定できる</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">config</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="s">&quot;pyramid_assetviews&quot;</span><span class="p">)</span>
+<span class="n">config</span><span class="o">.</span><span class="n">add_asset_views</span><span class="p">(</span><span class="s">&quot;static&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;robots.txt&quot;</span><span class="p">,</span> <span class="s">&quot;favicon.ico&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id25">
+<h2>セッション</h2>
+<p><tt class="docutils literal"><span class="pre">pyramid_beaker</span></tt> を使うと Pylons と同じように設定できる</p>
+<ul>
+<li><p class="first">ini ファイル</p>
+<div class="highlight-python"><pre>session.type = file
+session.data_dir = %(here)s/data/sessions/data
+session.lock_dir = %(here)s/data/sessions/lock
+session.key = akhet_demo
+session.secret = 0cb243f53ad865a0f70099c0414ffe9cfcfe03ac</pre>
+</div>
+</li>
+<li><p class="first">main 関数</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">config</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="s">&quot;pyramid_beaker&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id26">
 <h2>Pyramid の拡張方法</h2>
-<div class="admonition-todo admonition" id="index-1">
-<p class="first admonition-title">Todo</p>
-<p class="last">詳しく書く</p>
-</div>
 <ul class="simple">
 <li>設定ディレクティブ</li>
 <li>ビューマッパー</li>
@@ -321,6 +737,12 @@ mod_rewrite を使用して異なる URL を異なるアプリケーションに
 <li>tween (Pyramid 内の WSGI ミドルウェアのようなもの)</li>
 <li>Zope コンポーネントアーキテクチャ (ZCA)</li>
 </ul>
+</div>
+<div class="section" id="id27">
+<h2>まとめ</h2>
+</div>
+<div class="section" id="id28">
+<h2>情報源</h2>
 </div>
 </div>
 
