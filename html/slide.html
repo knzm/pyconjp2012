@@ -84,7 +84,7 @@
 </ul>
 </li>
 <li>翻訳とか<ul>
-<li>Pythonドキュメント日本語翻訳プロジェクト</li>
+<li>Python ドキュメント日本語翻訳プロジェクト</li>
 <li>PEP 333: Python Web Server Gateway Interface v1.0</li>
 <li>Pylons 0.9.7 ドキュメント</li>
 <li>Pylons プロジェクトドキュメント / Pyramid ドキュメント</li>
@@ -95,18 +95,6 @@
 </ul>
 </div>
 <div class="section" id="id2">
-<h2>この発表について</h2>
-<ul class="simple">
-<li>こんな人におすすめ<ul>
-<li>今現在 Pylons を使っている</li>
-<li>Pyramid に移行したいけど、どこから手を付けたらいいか分からない</li>
-<li>Pyramid でオレオレフレームワークが作りたい</li>
-<li>= 数ヶ月前の自分</li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="section" id="id3">
 <h2>アジェンダ</h2>
 <ul class="simple">
 <li>第1部 Pyramid の概要<ul>
@@ -121,6 +109,7 @@
 <li>Pylons 1.0 プロジェクトを Pyramid に移植すべきでない理由</li>
 <li>移植方法</li>
 <li>移植における注意点</li>
+<li>移植デモ</li>
 </ul>
 </li>
 <li>第3部 Pylons と Pyramid の比較</li>
@@ -153,11 +142,11 @@ Pyramid ができた<ul>
 </li>
 </ul>
 </div>
-<div class="section" id="id4">
+<div class="section" id="id3">
 <h2>Pyramid FAQ</h2>
 <ul class="simple">
 <li>Python 3 で動きますか?<ul>
-<li>Pyramid 1.3 以降であれば Python 3.2 以上で動きます (thanks to &#64;aodag)</li>
+<li>Pyramid 1.3 から Python 3.2 以上で動きます (thanks to &#64;aodag)</li>
 </ul>
 </li>
 </ul>
@@ -181,36 +170,40 @@ Pyramid ができた<ul>
 </ul>
 </div></blockquote>
 <ul class="simple">
-<li>2010年11月 Ben Bangert による blog 記事: &#8220;Why Extending Through
-Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
-<li>拡張性に深刻な問題があることに気づいた</li>
+<li>拡張性を取り入れるために改良しようとして、問題があることが分かった<ul>
+<li>Ben Bangert による blog 記事 (2010年11月): &#8220;Why Extending Through
+Subclassing (a framework’s classes) is a Bad Idea&#8221;</li>
 </ul>
 </li>
-<li>Pylons 2 の開発を進めるうちに repoze.bfg と似てきたことで、完全合併の
-方向へとシフト</li>
+<li>Pylons 2 の開発を進めるうちに repoze.bfg と似てきたことで、コードベース
+と開発コミュニティをマージする方向へとシフト</li>
 <li>2011年1月31日 Pyramid 1.0 リリース</li>
 </ul>
 </div>
 <div class="section" id="pylons-1-x">
 <h2>Pylons 1.x の何が悪かったのか</h2>
 <ul class="simple">
+<li>サブクラス化によるフレームワークの拡張<ul>
 <li>フレームワークを改良したくても、すべての主要なメソッドは事実上の API
 として凍結されていた<ul>
 <li>Pylons では、フレームワークの提供するベースクラスをサブクラス化
-することでプロジェクトを作成</li>
+することでプロジェクトを作成 (BaseController, BaseWSGIApp)</li>
 <li>ユーザはカスタマイズが必要なメソッドを自由にオーバーライドする</li>
 </ul>
 </li>
-<li>その他の理由<ul>
-<li>パフォーマンスの問題</li>
-<li>単体テストしづらい</li>
+<li>深い継承によるパフォーマンスの問題</li>
+<li>フレームワーク内の親クラスに依存するため単体テストしづらい</li>
 <li>多重継承による奇妙な衝突が発生</li>
 </ul>
 </li>
-<li>結論: <strong>サブクラス化によるフレームワークの拡張はすべきでない</strong></li>
+<li>StackedObjectProxy の使用<ul>
+<li>スレッドローカルかつアプリケーション固有のグローバル変数</li>
+<li>時に混乱の原因となる</li>
+</ul>
+</li>
 </ul>
 </div>
-<div class="section" id="id5">
+<div class="section" id="id4">
 <h2>Pyramid の特徴</h2>
 <ul class="simple">
 <li>Pylons と repoze.bfg それぞれに由来する豊富な機能 (※)<ul>
@@ -219,14 +212,14 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 <li>テンプレートエンジン: Mako or Chameleon</li>
 <li>scaffold</li>
 <li>インタラクティブデバッガー</li>
-<li>アクセス制御: ACL</li>
-<li>フック</li>
+<li>セキュリティ (Authentication / Authorization)</li>
 </ul>
 </li>
-<li>これまでの開発で得られた教訓<ul>
+<li>これまでのフレームワーク開発で得られた教訓<ul>
 <li>徹底したテストコード</li>
-<li>徹底したドキュメンテーション</li>
+<li>徹底したドキュメンテーション (API と実装の分離)</li>
 <li>サブクラス化に頼らない拡張方法</li>
+<li>グローバル変数の排除</li>
 </ul>
 </li>
 </ul>
@@ -237,14 +230,17 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </div>
 </div>
 </div>
-<div class="section" id="id6">
+<div class="section" id="id5">
 <h1>第2部 移植の方針</h1>
 <div class="section" id="pylons-1-0-pyramid-3">
-<h2>Pylons 1.0 プロジェクトを Pyramid に移植すべき3つの理由</h2>
+<h2>Pylons 1.0 プロジェクトを Pyramid に移植すべき 3つの理由</h2>
 <ul class="simple">
-<li>Pylons 1.0.x は「レガシー」扱いで今後はメンテナンスのみ</li>
+<li>Pylons 1.0.x は「レガシー」扱いで今後はメンテナンスのみ<ul>
+<li>今後 Pylons に大きな機能追加はない</li>
+</ul>
+</li>
 <li>Pyramid の方が (色々な意味で) 強力<ul>
-<li>特に、拡張性が非常に高い</li>
+<li>特に拡張性が非常に高いのでメタフレームワークとして魅力的</li>
 </ul>
 </li>
 <li>Pyramid for Pylons Users が公開された (2012-06-12)<ul>
@@ -254,10 +250,10 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </ul>
 </div>
 <div class="section" id="pylons-1-0-pyramid">
-<h2>Pylons 1.0 プロジェクトを Pyramid に移植すべきでない理由</h2>
+<h2>Pylons 1.0 プロジェクトを Pyramid に移植すべきでない 理由</h2>
 <ul class="simple">
-<li>Pyramid 自体が開発中<ul>
-<li>例) 1.3.2 で Mako テンプレートの継承ができなくなるバグがあり、
+<li>Pyramid 自体が開発途上<ul>
+<li>例) 1.3.2 で Mako テンプレートの継承ができなくなる致命的なバグがあり、
 修正版 (1.3.3) がリリースされるまで 3 ヶ月近くまともに使えなかった</li>
 <li>全体的に Pylons ユーザ向けの機能はまだ弱い</li>
 </ul>
@@ -268,10 +264,25 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 <li>Pylons Project JP <a class="reference external" href="http://www.pylonsproject.jp/">http://www.pylonsproject.jp/</a> にぜひ参加を (宣伝)</li>
 </ul>
 </li>
-<li>所感<ul>
+</ul>
+</div>
+<div class="section" id="id6">
+<h2>移植する? しない?</h2>
+<ul class="simple">
+<li>注: 個人の感想です<ul>
 <li>Pyramid と Pylons は内部がかなり違うので、移植はそれなりに覚悟が必要</li>
-<li>まずは新規のプロジェクトで Pyramid を試してみる</li>
-<li>既存のプロジェクトを移植する場合は、今のうちから準備をしておく</li>
+<li>まずは新規のプロジェクトで Pyramid を試してみる<ul>
+<li>うまくいったら小規模なプロジェクトに適用</li>
+</ul>
+</li>
+<li>既存のプロジェクトを移植する場合は、今のうちから計画的に準備しておくといいかも<ul>
+<li>テストを書く</li>
+<li>コントローラを軽くする</li>
+<li>コントローラ以外の場所ではグローバル変数 pylons.request を使わない</li>
+<li>Python 2.6 or 2.7 に環境をアップデートする</li>
+<li>etc.</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -279,19 +290,22 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 <div class="section" id="id7">
 <h2>移植の戦略 (1) ゼロから Pyramid で書き直す</h2>
 <ul class="simple">
-<li>あまり変更せずに使用可能<ul>
+<li>あまり変更せずに再利用可能<ul>
 <li>モデル, テンプレート, 静的ファイル</li>
 </ul>
 </li>
+</ul>
+<p><br /></p>
+<ul class="simple">
 <li>変更が必要<ul>
-<li>コントローラ, route マップ, グローバル変数</li>
+<li>コントローラ, ルーティング, グローバル変数</li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="id8">
 <h2>移植の戦略 (1) ゼロから Pyramid で書き直す</h2>
-<p>Before Render イベントを使ってレンダラーグローバル変数を追加する例:</p>
+<p>BeforeRender イベントを使ってレンダラーグローバル変数を追加する例:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyramid.events</span> <span class="kn">import</span> <span class="n">subscriber</span>
 <span class="kn">from</span> <span class="nn">pyramid.events</span> <span class="kn">import</span> <span class="n">BeforeRender</span>
 <span class="kn">from</span> <span class="nn">pyramid.threadlocal</span> <span class="kn">import</span> <span class="n">get_current_request</span>
@@ -308,10 +322,10 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </pre></div>
 </div>
 </div>
-<div class="section" id="url">
-<h2>移植の戦略 (2) 一度に 1 つずつ URL を移植する</h2>
+<div class="section" id="id9">
+<h2>移植の戦略 (2) 共存させつつ徐々に移植する</h2>
 <ul class="simple">
-<li>2 つのアプリケーションが共存する<ul>
+<li>一度に 1 つずつ URL を移植する<ul>
 <li>移植された URL -&gt; Pyramid</li>
 <li>移植されていない URL -&gt; Pylons</li>
 </ul>
@@ -332,8 +346,8 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </li>
 </ul>
 </div>
-<div class="section" id="id9">
-<h2>移植の戦略 (2) 一度に 1 つずつ URL を移植する</h2>
+<div class="section" id="id10">
+<h2>移植の戦略 (2) 共存させつつ徐々に移植する</h2>
 <p>NotFound ビューを使用する例:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mypylonsproject</span> <span class="kn">import</span> <span class="n">thepylonsapp</span>
 
@@ -351,11 +365,11 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id10">
+<div class="section" id="id11">
 <h2>移植における注意点</h2>
 <ul class="simple">
 <li>複数のアプリケーションを同時に実行する際に調整が必要な箇所<ul>
-<li>データベース接続、セッション、データファイルなど</li>
+<li>データベース接続数、セッションの共有、ファイルのロックなど</li>
 </ul>
 </li>
 <li>Pyramid アプリケーションを Python 2 と 3 のどちらで書くかは重要<ul>
@@ -363,24 +377,37 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 <li>Pyramid は Python 3 対応済み</li>
 <li>Pyramid が必要とするライブラリもほとんどは Python 3 対応している</li>
 <li>一部のライブラリは Python 3 対応していない<ul>
-<li>PIL, Paste, FormEncode, <strong>Pylons</strong></li>
+<li>PIL, Paste, WebHelpers, FormEncode, <strong>Pylons</strong></li>
 </ul>
 </li>
 </ul>
 </li>
 <li>Python 2<ul>
+<li>バージョンは 2.6 以上必須<ul>
 <li>Pyramid は Python 2.6 以上で動作</li>
 <li>多くのライブラリで Python 2.5 以下は徐々にサポートが打ち切られている</li>
 </ul>
 </li>
-<li>レガシー Pylons アプリケーションで使用しているライブラリのバージョンが
-古いと、 Pyramid と共存することが難しくなる</li>
 </ul>
 </li>
 </ul>
+</li>
+<li>レガシー Pylons アプリケーションで使用しているライブラリのバージョンが
+古いと Pyramid との共存が難しい</li>
+</ul>
+</div>
+<div class="section" id="id12">
+<h2>実際にやってみた</h2>
+<ul class="simple">
+<li>Pylons の QuickWiki チュートリアルを Pyramid に移植<ul>
+<li>「ゼロから Pyramid で書き直す」パターン</li>
+</ul>
+</li>
+<li><a class="reference external" href="https://bitbucket.org/knzm/quickwiki-pyramid/wiki/PatchList">https://bitbucket.org/knzm/quickwiki-pyramid/wiki/PatchList</a></li>
+</ul>
 </div>
 </div>
-<div class="section" id="id11">
+<div class="section" id="id13">
 <h1>第3部 Pylons と Pyramid の比較</h1>
 <p>Pylons 流のアプリケーション開発が、 Pyramid に移行することでどう変わるか</p>
 <div class="section" id="paster-p">
@@ -436,7 +463,7 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </li>
 </ul>
 </div>
-<div class="section" id="id12">
+<div class="section" id="id14">
 <h2>ディレクトリレイアウト</h2>
 <p>alchemy scaffold でプロジェクトを作成した場合</p>
 <div class="highlight-python"><pre>PyramidApp/
@@ -468,14 +495,11 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </ul>
 </li>
 <li>Pyramid の main 関数は Pylons の middleware.py, environment.py, routing.py の内容を含む</li>
-<li>Pyramid では Configurator パターンが使われている<ul>
-<li>Pylons よりも設定が簡潔に</li>
-</ul>
-</li>
+<li>Pyramid では Configurator を使って Pylons よりも簡潔に設定が行える</li>
 <li>WSGI ミドルウェアはありません</li>
 </ul>
 </div>
-<div class="section" id="id13">
+<div class="section" id="id15">
 <h2>main 関数</h2>
 <p>Pyramid の main 関数の例:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyramid.config</span> <span class="kn">import</span> <span class="n">Configurator</span>
@@ -491,7 +515,7 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id14">
+<div class="section" id="id16">
 <h2>ルーティングとビュー</h2>
 <ul class="simple">
 <li>Pylons の場合<ul>
@@ -525,24 +549,62 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </ul>
 </div>
 <div class="section" id="view-config">
-<h2>view_config</h2>
+<h2>view_config のパラメータ</h2>
+<ul class="simple">
+<li>述語引数<ul>
+<li>route_name</li>
+<li>context</li>
+<li>request_method</li>
+<li>request_param</li>
+<li>match_param</li>
+<li>custom_predicates</li>
+</ul>
+</li>
+<li>非述語引数<ul>
+<li>renderer</li>
+<li>permission</li>
+<li>http_cache</li>
+</ul>
+</li>
+</ul>
 </div>
-<div class="section" id="id15">
+<div class="section" id="id17">
+<h2>view_config のパラメータ</h2>
+<ul class="simple">
+<li>述語引数<ul>
+<li>route_name - ルート名</li>
+<li>context - 例外ビューなどで使用</li>
+<li>request_method - GET とか POST とか</li>
+<li>request_param - key=val</li>
+<li>match_param - ルーティングの変数部分 (/{title} とか)</li>
+<li>custom_predicates - 任意の関数</li>
+</ul>
+</li>
+<li>非述語引数<ul>
+<li>renderer</li>
+<li>permission</li>
+<li>http_cache</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id18">
 <h2>リソース</h2>
 <ul class="simple">
 <li>「トラバース」というルーティング方式を使う場合に重要な概念</li>
-<li>URL ディスパッチ (Pylons と同様のルーティング方式) を使う場合は、あまり意識しなくていい<ul>
+<li>URL ディスパッチ (Pylons と同様のルーティング方式) を使う場合は、
+あまり詳しく知る必要はない<ul>
 <li>重要なのは root リソースのみ</li>
 </ul>
 </li>
 <li>使い方<ul>
-<li>ロジックの定義</li>
+<li>ビジネスロジックの定義</li>
 <li>セキュリティ</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section" id="id16">
+<div class="section" id="id19">
 <h2>リソースの使用例</h2>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Resource</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">__acl__</span> <span class="o">=</span> <span class="p">[</span>
@@ -561,7 +623,7 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id17">
+<div class="section" id="id20">
 <h2>特殊グローバル変数</h2>
 <p>pylons.request</p>
 <ul class="simple">
@@ -578,7 +640,7 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 <li>Pyramid にはグローバルなレスポンスオブジェクトはない</li>
 </ul>
 </div>
-<div class="section" id="id18">
+<div class="section" id="id21">
 <h2>特殊グローバル変数</h2>
 <p>pylons.tmpl_context, pylons.c</p>
 <ul class="simple">
@@ -587,18 +649,18 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 <li>※過去に <tt class="docutils literal"><span class="pre">request.tmpl_context</span></tt> が導入されたが、後に廃止された</li>
 </ul>
 </div>
-<div class="section" id="id19">
+<div class="section" id="id22">
 <h2>特殊グローバル変数</h2>
 <p>pylons.app_globals</p>
 <ul class="simple">
 <li>最も近い等価物は <tt class="docutils literal"><span class="pre">request.registry</span></tt> か <tt class="docutils literal"><span class="pre">request.registry.settings</span></tt></li>
-<li>レジストリは Pyramid によって内部で使用されるシングルトン</li>
+<li>レジストリはアプリケーションに関する設定を集約するために Pyramid 内部で使用されるオブジェクト</li>
 <li><tt class="docutils literal"><span class="pre">request.registry.settings</span></tt> は通常アプリケーションの設定が格納される</li>
 </ul>
 </div>
-<div class="section" id="id20">
+<div class="section" id="id23">
 <h2>特殊グローバル変数</h2>
-<p>pylons.url</p>
+<p>pylons.url (h.url_for)</p>
 <ul class="simple">
 <li>request が URL 生成のためのメソッドを持っている<ul>
 <li><tt class="docutils literal"><span class="pre">request.route_url()</span></tt></li>
@@ -608,12 +670,18 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </li>
 </ul>
 </div>
-<div class="section" id="id21">
+<div class="section" id="id24">
 <h2>特殊グローバル変数</h2>
 <p>pylons.session</p>
 <ul class="simple">
-<li><tt class="docutils literal"><span class="pre">pyramid_beaker</span></tt> 拡張を有効にすると使えるようになる</li>
+<li><tt class="docutils literal"><span class="pre">request.session</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">pyramid_beaker</span></tt> 拡張を有効にするか、 Configurator に session_factory を渡す</li>
 </ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyramid.session</span> <span class="kn">import</span> <span class="n">UnencryptedCookieSessionFactoryConfig</span>
+<span class="n">session_factory</span> <span class="o">=</span> <span class="n">UnencryptedCookieSessionFactoryConfig</span><span class="p">(</span><span class="s">&#39;secret&#39;</span><span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Configurator</span><span class="p">(</span><span class="n">session_factory</span><span class="o">=</span><span class="n">session_factory</span><span class="p">)</span>
+</pre></div>
+</div>
 <p><br /></p>
 <p>pylons.cache</p>
 <ul class="simple">
@@ -638,8 +706,9 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </div>
 <p>HTTNotFound と HTTPForbidden は Pyramid 内部でも発生する</p>
 </div>
-<div class="section" id="id22">
+<div class="section" id="id25">
 <h2>例外ビュー</h2>
+<p>特定の例外が起きたときに呼び出されるビューのこと。</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">ValidationFailure</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
@@ -654,7 +723,7 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id23">
+<div class="section" id="id26">
 <h2>静的ファイル</h2>
 <ul>
 <li><p class="first">Pyramid で静的ファイルを返す標準の方法</p>
@@ -682,7 +751,7 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </li>
 </ul>
 </div>
-<div class="section" id="id24">
+<div class="section" id="id27">
 <h2>静的ファイル</h2>
 <ul>
 <li><p class="first">高度な使い方</p>
@@ -700,7 +769,7 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </li>
 </ul>
 </li>
-<li><p class="first">pyramid_assetviews というパッケージを使うとトップレベルのファイル URL を簡単に設定できる</p>
+<li><p class="first">pyramid_assetviews というパッケージを使うとトップレベルのファイル URL を簡単に設定できる (らしい)</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">config</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="s">&quot;pyramid_assetviews&quot;</span><span class="p">)</span>
 <span class="n">config</span><span class="o">.</span><span class="n">add_asset_views</span><span class="p">(</span><span class="s">&quot;static&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;robots.txt&quot;</span><span class="p">,</span> <span class="s">&quot;favicon.ico&quot;</span><span class="p">])</span>
 </pre></div>
@@ -708,7 +777,18 @@ Subclassing (a framework’s classes) is a Bad Idea&#8221;<ul>
 </li>
 </ul>
 </div>
-<div class="section" id="id25">
+<div class="section" id="asset-spec">
+<h2>asset spec</h2>
+<ul class="simple">
+<li>パッケージ内のファイルを参照する方法</li>
+<li>パッケージ名と相対パスをコロンで繋げる<ul>
+<li>例: <tt class="docutils literal"><span class="pre">my.package:static/baz.css</span></tt></li>
+</ul>
+</li>
+<li>テンプレートと静的ファイルのパスを指定する箇所で使用できる</li>
+</ul>
+</div>
+<div class="section" id="id28">
 <h2>セッション</h2>
 <p><tt class="docutils literal"><span class="pre">pyramid_beaker</span></tt> を使うと Pylons と同じように設定できる</p>
 <ul>
@@ -727,8 +807,29 @@ session.secret = 0cb243f53ad865a0f70099c0414ffe9cfcfe03ac</pre>
 </li>
 </ul>
 </div>
-<div class="section" id="id26">
+</div>
+<div class="section" id="id29">
+<h1>おわりに</h1>
+<div class="section" id="id30">
+<h2>まとめ</h2>
+<ul class="simple">
+<li>Pyramid に移行するメリットはある<ul>
+<li>最新のライブラリへの追従</li>
+<li>拡張性</li>
+</ul>
+</li>
+<li>既存の Pylons アプリケーションの移植は慎重に考える必要あり</li>
+<li>移植の戦略<ul>
+<li>ゼロから Pyramid で書き直す</li>
+<li>共存させつつ徐々に移植する</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id31">
 <h2>Pyramid の拡張方法</h2>
+<p>※時間の関係で今回は割愛しました (いずれどこかで発表したい)</p>
+<p><br /></p>
 <ul class="simple">
 <li>設定ディレクティブ</li>
 <li>ビューマッパー</li>
@@ -738,12 +839,19 @@ session.secret = 0cb243f53ad865a0f70099c0414ffe9cfcfe03ac</pre>
 <li>Zope コンポーネントアーキテクチャ (ZCA)</li>
 </ul>
 </div>
-<div class="section" id="id27">
-<h2>まとめ</h2>
-</div>
-<div class="section" id="id28">
+<div class="section" id="id32">
 <h2>情報源</h2>
+<ul class="simple">
+<li>Pylons Project JP <a class="reference external" href="http://www.pylonsproject.jp/">http://www.pylonsproject.jp/</a></li>
+<li>facebookグループ pylonsproject.jp</li>
+<li>Pyramid ドキュメント (翻訳) <a class="reference external" href="http://docs.pylonsproject.jp/projects/pyramid-doc-ja/en/latest/">http://docs.pylonsproject.jp/projects/pyramid-doc-ja/en/latest/</a></li>
+<li>Pylons ユーザのための Pyramid (翻訳) <a class="reference external" href="http://docs.pylonsproject.jp/projects/pyramid_cookbook-ja/en/latest/pylons/index.html">http://docs.pylonsproject.jp/projects/pyramid_cookbook-ja /en/latest/pylons/index.html</a></li>
+</ul>
 </div>
+</div>
+<div class="section" id="thank-you">
+<h1>Thank you!</h1>
+<p>ご清聴ありがとうございました</p>
 </div>
 
 

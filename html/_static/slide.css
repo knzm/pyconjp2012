@@ -32,6 +32,10 @@ body {
   line-height: 120%;
 }
 
+div.body p, div.body dd, div.body li {
+  line-height: 1.5em;
+}
+
 body, pre, tt,
 div.sphinxsidebar h3,
 div.sphinxsidebar h4,
@@ -95,28 +99,34 @@ a {
   text-decoration: inherit;
 }
 
+/*
+a:link, a:visited {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+a:hover, a:active, a {
+  color: #0000ff;
+  text-decoration: underline;
+}
+*/
+
 tt {
   background: none;
 }
 
-div.admonition, div.warning {
-  font-size: 18pt;
-  margin: 1em 0 1em 0;
-  border: 1px solid #86989B;
-  background-color: #F7F7F7;
-  padding: 0;
+p.admonition-title {
+  display: none;
 }
 
-div.admonition p.admonition-title, div.warning p.admonition-title {
-  margin: 0;
-  padding: 0.1em 0 0.1em 0.5em;
-  color: white;
-  border-bottom: 1px solid #86989B;
-  font-weight: bold;
-  background-color: #AFC1C4;
+div.admonition p.admonition-title + p {
+  display: inline;
 }
 
-div.admonition p, div.warning p {
-  margin: 0.5em 1em 0.5em 1em;
-  padding: 0;
+div.note {
+  border: 2px solid #ccc;
+  border-right-style: none;
+  border-left-style: none;
+  padding: 10px 20px 10px 20px;
+  background: #eee;
 }
