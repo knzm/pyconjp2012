@@ -9,3 +9,7 @@ div.right img {
 div.center {
   text-align: center;
 }
+
+div.related ul {
+  padding: 0 10px 0 10px;
+}
